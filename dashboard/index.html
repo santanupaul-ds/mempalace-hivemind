@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hivemind Team Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        hive: {
+                            900: '#0f0f1a',
+                            800: '#1a1a2e',
+                            700: '#25253d',
+                            600: '#33334d',
+                            500: '#4a4a6a',
+                            400: '#7c7ca0',
+                            300: '#a0a0c0',
+                            accent: '#8b5cf6',
+                            gold: '#fbbf24',
+                            silver: '#9ca3af',
+                            bronze: '#d97706',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: #0f0f1a; }
+        .glass { background: rgba(26, 26, 46, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(139, 92, 246, 0.15); }
+        .rank-badge { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 700; font-size: 14px; }
+        .glow { box-shadow: 0 0 20px rgba(139, 92, 246, 0.15); }
+    </style>
+</head>
+<body class="min-h-screen text-gray-200 font-sans">
+
+    <!-- Header -->
+    <header class="border-b border-hive-700 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-hive-accent/20 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-hive-accent" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <h1 class="text-xl font-bold text-white">Hivemind <span class="text-hive-accent">Team Dashboard</span></h1>
+            </div>
+            <span class="text-sm text-hive-400">Last updated: June 10, 2026</span>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+
+        <!-- Summary Stats -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="glass rounded-xl p-5 glow">
+                <p class="text-hive-400 text-sm">Total Users</p>
+                <p class="text-3xl font-bold text-white mt-1">10</p>
+            </div>
+            <div class="glass rounded-xl p-5 glow">
+                <p class="text-hive-400 text-sm">Total Sessions</p>
+                <p class="text-3xl font-bold text-white mt-1">1,247</p>
+            </div>
+            <div class="glass rounded-xl p-5 glow">
+                <p class="text-hive-400 text-sm">Avg Score</p>
+                <p class="text-3xl font-bold text-white mt-1">642</p>
+            </div>
+            <div class="glass rounded-xl p-5 glow">
+                <p class="text-hive-400 text-sm">Active Streaks</p>
+                <p class="text-3xl font-bold text-white mt-1">7</p>
+            </div>
+        </section>
+
+        <!-- Leaderboard -->
+        <section class="glass rounded-xl p-6 glow">
+            <h2 class="text-lg font-semibold text-white mb-4">Leaderboard</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-hive-400 text-sm border-b border-hive-700">
+                            <th class="pb-3 pr-4">Rank</th>
+                            <th class="pb-3 pr-4">User</th>
+                            <th class="pb-3 pr-4">Score</th>
+                            <th class="pb-3 pr-4">Sessions</th>
+                            <th class="pb-3 pr-4">Streak</th>
+                            <th class="pb-3">Last Active</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Charts Grid -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Bar Chart -->
+            <div class="glass rounded-xl p-6 glow">
+                <h2 class="text-lg font-semibold text-white mb-4">Usage by User</h2>
+                <canvas id="barChart"></canvas>
+            </div>
+
+            <!-- Line Chart -->
+            <div class="glass rounded-xl p-6 glow">
+                <h2 class="text-lg font-semibold text-white mb-4">Usage Over Time</h2>
+                <canvas id="lineChart"></canvas>
+            </div>
+
+            <!-- Pie Chart -->
+            <div class="glass rounded-xl p-6 glow lg:col-span-2 max-w-lg mx-auto w-full">
+                <h2 class="text-lg font-semibold text-white mb-4 text-center">Feature Breakdown</h2>
+                <canvas id="pieChart"></canvas>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-hive-700 px-6 py-4 mt-8">
+        <p class="text-center text-hive-500 text-sm">Hivemind Dashboard &mdash; Dummy Data for Demo Purposes</p>
+    </footer>
+
+    <script>
+        // Dummy Data
+        const users = [
+            { name: 'Priya Sharma',    score: 980, sessions: 203, streak: 14, lastActive: '2h ago' },
+            { name: 'Alex Chen',       score: 895, sessions: 178, streak: 11, lastActive: '1h ago' },
+            { name: 'Jordan Brooks',   score: 842, sessions: 165, streak: 9,  lastActive: '3h ago' },
+            { name: 'Sam Okonkwo',     score: 756, sessions: 142, streak: 7,  lastActive: '5h ago' },
+            { name: 'Maria Garcia',    score: 698, sessions: 131, streak: 6,  lastActive: '1d ago' },
+            { name: 'Ravi Patel',      score: 621, sessions: 114, streak: 4,  lastActive: '2d ago' },
+            { name: 'Lena Muller',     score: 543, sessions: 98,  streak: 3,  lastActive: '1d ago' },
+            { name: 'Kai Tanaka',      score: 478, sessions: 82,  streak: 0,  lastActive: '3d ago' },
+            { name: 'Diego Silva',     score: 365, sessions: 71,  streak: 2,  lastActive: '4d ago' },
+            { name: 'Aisha Obi',       score: 242, sessions: 63,  streak: 0,  lastActive: '5d ago' },
+        ];
+
+        const weeklyData = {
+            labels: ['Apr 14', 'Apr 21', 'Apr 28', 'May 5', 'May 12', 'May 19', 'May 26', 'Jun 2'],
+            values: [89, 112, 98, 134, 156, 148, 172, 185]
+        };
+
+        const featureData = {
+            labels: ['Memory Search', 'Mining', 'KG Query', 'Tunnels', 'Diary', 'Palace Status'],
+            values: [312, 245, 198, 156, 189, 147]
+        };
+
+        // Render Leaderboard
+        const tbody = document.getElementById('leaderboard-body');
+        users.forEach((user, i) => {
+            const rank = i + 1;
+            let badgeColor, badgeBg;
+            if (rank === 1) { badgeColor = 'text-yellow-900'; badgeBg = 'bg-hive-gold'; }
+            else if (rank === 2) { badgeColor = 'text-gray-900'; badgeBg = 'bg-hive-silver'; }
+            else if (rank === 3) { badgeColor = 'text-yellow-100'; badgeBg = 'bg-hive-bronze'; }
+            else { badgeColor = 'text-hive-300'; badgeBg = 'bg-hive-700'; }
+
+            const streakIcon = user.streak > 0 ? `<span class="text-orange-400">${user.streak}d</span>` : '<span class="text-hive-500">-</span>';
+
+            tbody.innerHTML += `
+                <tr class="border-b border-hive-700/50 hover:bg-hive-700/30 transition-colors">
+                    <td class="py-3 pr-4"><div class="rank-badge ${badgeBg} ${badgeColor}">${rank}</div></td>
+                    <td class="py-3 pr-4 font-medium text-white">${user.name}</td>
+                    <td class="py-3 pr-4"><span class="text-hive-accent font-semibold">${user.score}</span></td>
+                    <td class="py-3 pr-4">${user.sessions}</td>
+                    <td class="py-3 pr-4">${streakIcon}</td>
+                    <td class="py-3 text-hive-400">${user.lastActive}</td>
+                </tr>
+            `;
+        });
+
+        // Chart defaults
+        Chart.defaults.color = '#a0a0c0';
+        Chart.defaults.borderColor = 'rgba(139, 92, 246, 0.1)';
+
+        // Bar Chart
+        new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: {
+                labels: users.map(u => u.name.split(' ')[0]),
+                datasets: [{
+                    label: 'Sessions',
+                    data: users.map(u => u.sessions),
+                    backgroundColor: 'rgba(139, 92, 246, 0.6)',
+                    borderColor: 'rgba(139, 92, 246, 1)',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: 'rgba(139, 92, 246, 0.05)' } },
+                    y: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Line Chart
+        new Chart(document.getElementById('lineChart'), {
+            type: 'line',
+            data: {
+                labels: weeklyData.labels,
+                datasets: [{
+                    label: 'Team Sessions',
+                    data: weeklyData.values,
+                    borderColor: 'rgba(139, 92, 246, 1)',
+                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(139, 92, 246, 1)',
+                    pointRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: 'rgba(139, 92, 246, 0.05)' } },
+                    y: { grid: { color: 'rgba(139, 92, 246, 0.05)' }, beginAtZero: true }
+                }
+            }
+        });
+
+        // Pie Chart
+        new Chart(document.getElementById('pieChart'), {
+            type: 'doughnut',
+            data: {
+                labels: featureData.labels,
+                datasets: [{
+                    data: featureData.values,
+                    backgroundColor: [
+                        'rgba(139, 92, 246, 0.8)',
+                        'rgba(99, 102, 241, 0.8)',
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(14, 165, 233, 0.8)',
+                        'rgba(20, 184, 166, 0.8)',
+                        'rgba(52, 211, 153, 0.8)',
+                    ],
+                    borderColor: '#1a1a2e',
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 16 } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
