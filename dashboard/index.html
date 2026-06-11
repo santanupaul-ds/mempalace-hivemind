@@ -40,44 +40,46 @@
         .rank-2 { background: #E8E0F5; color: #4C00FF; }
         .rank-3 { background: #6B2FFF; color: #fff; }
         .rank-default { background: #F3F0FF; color: #6B7280; }
+        .repo-row { cursor: pointer; transition: all 0.2s; }
+        .repo-row:hover { background: #F8F6FF; }
+        .repo-memories { display: none; animation: slideDown 0.3s ease; }
+        .repo-memories.active { display: block; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="min-h-screen font-inter text-gray-800">
 
-    <!-- Hero Header -->
-    <header class="ds-gradient text-white">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <!-- Top Navigation Bar -->
+    <nav class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <!-- DocuSign Logo -->
-                <svg width="140" height="28" viewBox="0 0 140 28" fill="none">
-                    <text x="0" y="20" font-family="Inter" font-weight="700" font-size="18" fill="white">DocuSign</text>
-                </svg>
-                <div class="h-5 w-px bg-white/30"></div>
-                <span class="text-sm font-medium text-white/80">Hackathon 2026</span>
+                <img src="https://docucdn-a.akamaihd.net/olive/images/2.72.0/global-assets/ds-logo-default.svg" alt="DocuSign" class="h-7"/>
+                <div class="h-4 w-px bg-gray-300"></div>
+                <span class="text-xs font-medium text-gray-500">Hackathon 2026</span>
             </div>
             <div class="flex items-center gap-3">
-                <span class="text-xs bg-white/10 border border-white/20 px-3 py-1 rounded-full text-white/90">Internal Tool</span>
+                <span class="text-xs bg-gray-100 border border-gray-200 px-3 py-1 rounded-full text-gray-600">Internal Tool</span>
             </div>
         </div>
-    </header>
+    </nav>
 
-    <!-- Sub-header with tool name -->
-    <div class="bg-white border-b border-docusign-border">
+    <!-- Dashboard Header -->
+    <header class="bg-docusign-purple text-white">
         <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg ds-gradient flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 rounded-lg bg-white/15 border border-white/20 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-docusign-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold text-docusign-dark">Hivemind Usage Dashboard</h1>
-                    <p class="text-xs text-docusign-muted">Team adoption & engagement metrics</p>
+                    <h1 class="text-xl font-bold text-white">Hivemind Usage Dashboard</h1>
+                    <p class="text-xs text-white/70">Team adoption & engagement metrics</p>
                 </div>
             </div>
-            <p class="text-xs text-docusign-muted">Last updated: June 11, 2026</p>
+            <p class="text-xs text-white/70">Last updated: June 11, 2026</p>
         </div>
-    </div>
+    </header>
 
     <main class="max-w-7xl mx-auto px-6 py-8 space-y-6">
 
@@ -101,7 +103,7 @@
                     <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">+18%</span>
                 </div>
                 <p class="text-2xl font-bold text-docusign-dark">1,247</p>
-                <p class="text-xs text-docusign-muted mt-0.5">Total Sessions</p>
+                <p class="text-xs text-docusign-muted mt-0.5">Total Memories</p>
             </div>
             <div class="ds-card rounded-xl p-5 transition-all">
                 <div class="flex items-center justify-between mb-3">
@@ -123,7 +125,19 @@
             </div>
         </section>
 
-        <!-- Leaderboard -->
+        <!-- Repo Leaderboard -->
+        <section class="ds-card rounded-xl p-6">
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h2 class="text-base font-semibold text-docusign-dark">Repo Leaderboard</h2>
+                    <p class="text-xs text-docusign-muted mt-0.5">Repositories onboarded with most memories &mdash; click to view top 10</p>
+                </div>
+                <span class="text-xs font-medium text-docusign-purple bg-docusign-light px-3 py-1 rounded-full">5 Repos</span>
+            </div>
+            <div id="repo-leaderboard"></div>
+        </section>
+
+        <!-- Team Leaderboard -->
         <section class="ds-card rounded-xl p-6">
             <div class="flex items-center justify-between mb-5">
                 <div>
@@ -139,7 +153,7 @@
                             <th class="pb-3 pr-4 w-14">Rank</th>
                             <th class="pb-3 pr-4">User</th>
                             <th class="pb-3 pr-4 text-right">Score</th>
-                            <th class="pb-3 pr-4 text-right">Sessions</th>
+                            <th class="pb-3 pr-4 text-right">Memories</th>
                             <th class="pb-3 pr-4 text-center">Streak</th>
                             <th class="pb-3 text-right">Last Active</th>
                         </tr>
@@ -152,8 +166,8 @@
         <!-- Charts -->
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="ds-card rounded-xl p-6">
-                <h2 class="text-base font-semibold text-docusign-dark">Sessions by User</h2>
-                <p class="text-xs text-docusign-muted mt-0.5 mb-4">Individual session counts this quarter</p>
+                <h2 class="text-base font-semibold text-docusign-dark">Memories by User</h2>
+                <p class="text-xs text-docusign-muted mt-0.5 mb-4">Individual memory counts this quarter</p>
                 <canvas id="barChart"></canvas>
             </div>
 
@@ -163,11 +177,19 @@
                 <canvas id="lineChart"></canvas>
             </div>
 
-            <div class="ds-card rounded-xl p-6 lg:col-span-2">
-                <div class="max-w-sm mx-auto">
-                    <h2 class="text-base font-semibold text-docusign-dark text-center">Feature Adoption</h2>
-                    <p class="text-xs text-docusign-muted mt-0.5 mb-4 text-center">Most-used Hivemind capabilities</p>
+            <div class="ds-card rounded-xl p-6">
+                <h2 class="text-base font-semibold text-docusign-dark">Feature Adoption</h2>
+                <p class="text-xs text-docusign-muted mt-0.5 mb-4">Most-used Hivemind capabilities</p>
+                <div class="h-[280px]">
                     <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+
+            <div class="ds-card rounded-xl p-6">
+                <h2 class="text-base font-semibold text-docusign-dark">Feature-wise Usage</h2>
+                <p class="text-xs text-docusign-muted mt-0.5 mb-4">Memories by product feature</p>
+                <div class="h-[280px]">
+                    <canvas id="featureUsageChart"></canvas>
                 </div>
             </div>
         </section>
@@ -184,7 +206,7 @@
                 </svg>
                 <div>
                     <p class="text-sm font-semibold text-docusign-dark">DocuSign Hackathon 2026</p>
-                    <p class="text-xs text-docusign-muted">Built with Hivemind by MemPalace</p>
+                    <p class="text-xs text-docusign-muted">Built with Hivemind</p>
                 </div>
             </div>
             <p class="text-xs text-docusign-muted">Demo Dashboard &mdash; Dummy Data for Illustration</p>
@@ -193,16 +215,16 @@
 
     <script>
         const users = [
-            { name: 'Priya Sharma',    score: 980, sessions: 203, streak: 14, lastActive: '2h ago' },
-            { name: 'Alex Chen',       score: 895, sessions: 178, streak: 11, lastActive: '1h ago' },
-            { name: 'Jordan Brooks',   score: 842, sessions: 165, streak: 9,  lastActive: '3h ago' },
-            { name: 'Sam Okonkwo',     score: 756, sessions: 142, streak: 7,  lastActive: '5h ago' },
-            { name: 'Maria Garcia',    score: 698, sessions: 131, streak: 6,  lastActive: '1d ago' },
-            { name: 'Ravi Patel',      score: 621, sessions: 114, streak: 4,  lastActive: '2d ago' },
-            { name: 'Lena Muller',     score: 543, sessions: 98,  streak: 3,  lastActive: '1d ago' },
-            { name: 'Kai Tanaka',      score: 478, sessions: 82,  streak: 0,  lastActive: '3d ago' },
-            { name: 'Diego Silva',     score: 365, sessions: 71,  streak: 2,  lastActive: '4d ago' },
-            { name: 'Aisha Obi',       score: 242, sessions: 63,  streak: 0,  lastActive: '5d ago' },
+            { name: 'Priya Sharma',    score: 980, memories: 203, streak: 14, lastActive: '2h ago' },
+            { name: 'Alex Chen',       score: 895, memories: 178, streak: 11, lastActive: '1h ago' },
+            { name: 'Jordan Brooks',   score: 842, memories: 165, streak: 9,  lastActive: '3h ago' },
+            { name: 'Sam Okonkwo',     score: 756, memories: 142, streak: 7,  lastActive: '5h ago' },
+            { name: 'Maria Garcia',    score: 698, memories: 131, streak: 6,  lastActive: '1d ago' },
+            { name: 'Ravi Patel',      score: 621, memories: 114, streak: 4,  lastActive: '2d ago' },
+            { name: 'Lena Muller',     score: 543, memories: 98,  streak: 3,  lastActive: '1d ago' },
+            { name: 'Kai Tanaka',      score: 478, memories: 82,  streak: 0,  lastActive: '3d ago' },
+            { name: 'Diego Silva',     score: 365, memories: 71,  streak: 2,  lastActive: '4d ago' },
+            { name: 'Aisha Obi',       score: 242, memories: 63,  streak: 0,  lastActive: '5d ago' },
         ];
 
         const weeklyData = {
@@ -215,14 +237,100 @@
             values: [312, 245, 198, 156, 189, 147]
         };
 
+        const featureUsageData = {
+            labels: ['MSF Migration', '1DS Migration', 'I9 Verification', 'Witness on Demand', '3PN'],
+            values: [284, 219, 342, 187, 215]
+        };
+
+        const repoData = [
+            {
+                name: 'martini/prepare',
+                memories: 342,
+                topMemories: [
+                    'Prepare service orchestrates document preparation flow — validates envelope schema before routing to signing',
+                    'Template rendering engine supports conditional fields, calculated values, and dynamic tab placement',
+                    'Bulk send preparation batches up to 1000 envelopes — chunked into groups of 50 for parallel processing',
+                    'Document transformation pipeline: upload → virus scan → format detect → convert to PDF → optimize → store',
+                    'Recipient routing logic resolves signing order, conditional recipients, and role-based assignments',
+                    'Prepare API rate limiting: 500 req/min per account, burst allowance of 100 for bulk operations',
+                    'Field validation rules engine evaluates 23 constraint types including regex, date range, and cross-field dependencies',
+                    'Envelope draft auto-save persists every 30s — recoverable up to 7 days after last edit',
+                    'PowerForms preparation handles anonymous signer flows with dynamic recipient generation at access time',
+                    'Prepare service SLA: p95 envelope creation under 800ms, template application under 200ms'
+                ]
+            },
+            {
+                name: 'Microservices/verification-session-service',
+                memories: 267,
+                topMemories: [
+                    'Verification session lifecycle: CREATED → IDENTITY_CHECK → DOCUMENT_REVIEW → SIGNING → COMPLETED',
+                    'Session service manages real-time state sync between signer, witness, and notary participants via WebSocket',
+                    'Identity verification integrates three providers — fallback chain: IDology → Jumio → manual review queue',
+                    'Session timeout hierarchy: 15min for identity step, 30min for document review, 60min for full ceremony',
+                    'Audit trail captures every session event with participant fingerprint, IP, geo-location, and device info',
+                    'Session recovery: if connection drops mid-signing, signer can resume within 24h from last checkpoint',
+                    'Knowledge-based authentication (KBA) pulls from credit bureau data — 4 questions, 3 must match, 2 attempts max',
+                    'Session recording pipeline stores encrypted video chunks in S3 with 7-year retention for compliance',
+                    'Multi-party session coordination: notary joins only after all signers complete identity verification',
+                    'Session metrics: avg completion time 4.2min for ID verify, 6.8min for full notarization ceremony'
+                ]
+            },
+            {
+                name: 'Microservices/notary-service',
+                memories: 213,
+                topMemories: [
+                    'Notary service manages commissioned notary lifecycle — onboarding, credential verification, and session assignment',
+                    'Notary matching algorithm weighs state commission, availability, language, and current session load',
+                    'Electronic notarization journal stores each act with signer identity proof, document hash, and seal image',
+                    'RON (Remote Online Notarization) compliance engine validates state-specific rules — 43 states supported',
+                    'Notary seal generation: dynamic SVG with commission number, state, and expiry embedded in tamper-evident PDF layer',
+                    'Session handoff: if notary disconnects, failover to backup notary within 60s preserving full session state',
+                    'Commission expiry tracking: alerts notary 90/60/30 days before expiration, auto-suspends on lapse',
+                    'Notary queue prioritization: same-day closings > scheduled appointments > on-demand requests',
+                    'Multi-state notaries: service tracks separate commissions and applies correct rules per transaction state',
+                    'Notary performance metrics: avg session time 8.2min, signer satisfaction 4.7/5, completion rate 96.3%'
+                ]
+            },
+            {
+                name: 'martini/app',
+                memories: 198,
+                topMemories: [
+                    'Martini app is the main signing experience SPA — React 18 with module federation for micro-frontends',
+                    'Envelope rendering uses canvas-based PDF viewer with custom annotation layer for tabs and fields',
+                    'Offline signing mode caches envelope data in IndexedDB — syncs signatures when connectivity returns',
+                    'Responsive signing adapts layout for mobile: pinch-to-zoom on documents, bottom-sheet for field input',
+                    'Accessibility: full WCAG 2.1 AA compliance — screen reader announces each required field in tab order',
+                    'Signing ceremony state machine handles interrupts: save-and-close, decline, delegate, and reassign flows',
+                    'Performance: initial signing page load under 2s on 3G — code-split by ceremony type (in-person vs remote)',
+                    'Draw signature capture uses pressure-sensitive canvas with velocity-based smoothing algorithm',
+                    'Multi-language support: 44 locales with RTL layout for Arabic and Hebrew signing ceremonies',
+                    'Feature flags via LaunchDarkly control rollout of new signing UX — currently A/B testing guided mode'
+                ]
+            },
+            {
+                name: 'FrontEndShared/i9-verification-app',
+                memories: 156,
+                topMemories: [
+                    'I9 verification app is a React micro-frontend embedded in the HR onboarding flow via module federation',
+                    'Document capture UI uses device camera with auto-crop, glare detection, and blur-check before upload',
+                    'Form wizard guides employer through Section 2 — auto-populates from employee Section 1 submission',
+                    'List A/B/C document selector implements USCIS acceptable documents matrix with expiration validation',
+                    'E-Verify integration status displayed real-time: submitted → queued → processing → case result',
+                    'Reverification reminder banner appears 90 days before work authorization expiry with one-click initiation',
+                    'Accessibility: all form fields have ARIA labels, error announcements, and keyboard-navigable document preview',
+                    'Offline-capable: saves partial form state to localStorage, resumes on reconnect without data loss',
+                    'Bulk I9 management view shows compliance status across all employees with filter by expiry date range',
+                    'Integration test suite covers 47 document type combinations across all USCIS List A, B, and C categories'
+                ]
+            }
+        ];
+
         // Leaderboard
         const tbody = document.getElementById('leaderboard-body');
         users.forEach((user, i) => {
             const rank = i + 1;
             let badgeClass;
             if (rank === 1) badgeClass = 'rank-1';
-            else if (rank === 2) badgeClass = 'rank-2';
-            else if (rank === 3) badgeClass = 'rank-3';
             else badgeClass = 'rank-default';
 
             const initials = user.name.split(' ').map(n => n[0]).join('');
@@ -242,12 +350,60 @@
                         </div>
                     </td>
                     <td class="py-3 pr-4 text-right"><span class="${scoreColor}">${user.score}</span></td>
-                    <td class="py-3 pr-4 text-right text-sm text-gray-600">${user.sessions}</td>
+                    <td class="py-3 pr-4 text-right text-sm text-gray-600">${user.memories}</td>
                     <td class="py-3 pr-4 text-center">${streakEl}</td>
                     <td class="py-3 text-right text-xs text-docusign-muted">${user.lastActive}</td>
                 </tr>
             `;
         });
+
+        // Repo Leaderboard
+        const repoContainer = document.getElementById('repo-leaderboard');
+        repoData.forEach((repo, i) => {
+            const rank = i + 1;
+            let badgeClass;
+            if (rank === 1) badgeClass = 'rank-1';
+            else badgeClass = 'rank-default';
+
+            repoContainer.innerHTML += `
+                <div class="border-b border-gray-50">
+                    <div class="repo-row flex items-center justify-between py-4 px-3 rounded-lg" onclick="toggleRepo(${i})">
+                        <div class="flex items-center gap-3">
+                            <div class="rank-badge ${badgeClass}">${rank}</div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">${repo.name}</p>
+                                <p class="text-xs text-docusign-muted">${repo.memories} memories</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-docusign-purple rounded-full" style="width: ${(repo.memories / repoData[0].memories * 100)}%"></div>
+                            </div>
+                            <svg class="w-4 h-4 text-docusign-muted transition-transform" id="chevron-${i}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="repo-memories px-3 pb-4" id="repo-memories-${i}">
+                        <div class="ml-10 space-y-2">
+                            ${repo.topMemories.map((memory, mi) => `
+                                <div class="flex gap-2 p-2 rounded-lg bg-docusign-bg/50">
+                                    <span class="text-xs font-medium text-docusign-purple mt-0.5 shrink-0">#${mi + 1}</span>
+                                    <p class="text-xs text-gray-700 leading-relaxed">${memory}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        function toggleRepo(index) {
+            const el = document.getElementById(`repo-memories-${index}`);
+            const chevron = document.getElementById(`chevron-${index}`);
+            el.classList.toggle('active');
+            chevron.style.transform = el.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0)';
+        }
 
         // Chart theme
         Chart.defaults.color = '#6B7280';
@@ -261,8 +417,8 @@
             data: {
                 labels: users.map(u => u.name.split(' ')[0]),
                 datasets: [{
-                    label: 'Sessions',
-                    data: users.map(u => u.sessions),
+                    label: 'Memories',
+                    data: users.map(u => u.memories),
                     backgroundColor: '#4C00FF',
                     borderRadius: 4,
                     barThickness: 16,
@@ -285,7 +441,7 @@
             data: {
                 labels: weeklyData.labels,
                 datasets: [{
-                    label: 'Team Sessions',
+                    label: 'Team Memories',
                     data: weeklyData.values,
                     borderColor: '#4C00FF',
                     backgroundColor: (ctx) => {
@@ -336,12 +492,36 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 cutout: '60%',
                 plugins: {
                     legend: {
                         position: 'bottom',
                         labels: { padding: 14, usePointStyle: true, pointStyle: 'circle' }
                     }
+                }
+            }
+        });
+
+        // Feature Usage Bar Chart
+        new Chart(document.getElementById('featureUsageChart'), {
+            type: 'bar',
+            data: {
+                labels: featureUsageData.labels,
+                datasets: [{
+                    label: 'Memories',
+                    data: featureUsageData.values,
+                    backgroundColor: ['#4C00FF', '#6B2FFF', '#9B5CFF', '#FFC829', '#D4BBFF'],
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { grid: { color: '#F3F0FF' }, beginAtZero: true }
                 }
             }
         });
